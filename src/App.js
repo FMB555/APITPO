@@ -4,7 +4,6 @@ import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import signIn from "./components/pages/SignIn";
 import signUp from './components/pages/SignUp';
 import forgotPass from "./components/pages/Password";
-//Let me try something.
 
 class App extends React.Component {
   render() {
