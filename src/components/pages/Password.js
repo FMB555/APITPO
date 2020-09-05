@@ -71,15 +71,26 @@ export default function SignUp() {
                 />
             </Grid>
             <Grid item xs={12} sm={6}>
-                <TextField
-                    variant="outlined"
-                    required
-                    fullWidth
-                    id="lastName"
-                    label="Apellido"
-                    name="lastName"
-                    autoComplete="lname"
+              <TextField
+                  variant="outlined"
+                  required
+                  fullWidth
+                  id="lastName"
+                  label="Apellido"
+                  name="lastName"
+                  autoComplete="lname"
                 />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField 
+                variant="outlined"
+                required
+                fullWidth
+                id="legajo"
+                label="Legajo"
+                name="legajo"
+                autoComplete="legajo"
+              />
             </Grid>
             <Grid item xs={12}>
                 <TextField

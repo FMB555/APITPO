@@ -12,6 +12,7 @@ import Add from '@material-ui/icons/Add';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import { useHistory } from 'react-router-dom';
 
 function Copyright() {
   return (
@@ -49,6 +50,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SignUp() {
   const classes = useStyles();
+  const history = useHistory();
 
   return (
     <Container component="main" maxWidth="xs">
@@ -86,6 +88,17 @@ export default function SignUp() {
               />
             </Grid>
             <Grid item xs={12}>
+              <TextField 
+                variant="outlined"
+                required
+                fullWidth
+                id="legajo"
+                label="Legajo"
+                name="legajo"
+                autoComplete="legajo"
+              />
+            </Grid>
+            <Grid item xs={12}>
               <TextField
                 variant="outlined"
                 required
@@ -115,6 +128,7 @@ export default function SignUp() {
             variant="contained"
             color="primary"
             className={classes.submit}
+            onClick={()=>{history.push('/home')}}
           >
             Registrarse
           </Button>
