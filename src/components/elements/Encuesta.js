@@ -11,7 +11,7 @@ class Encuesta extends Component {
 
     mostrarPregunta = () => {
 
-        //const preguntas = this.props.preguntas;
+        const preguntas = this.props.preguntas;
 
         return (
             <React.Fragment>
@@ -35,8 +35,8 @@ class Encuesta extends Component {
                     </h2>
                     <PreguntaSimple nombre='Pregunta Simple' len='10'/>
                     <PreguntaCompleja nombre='Pregunta Compleja'/>
-                    <SeleccionUnica nombre='Selección única' lista={['Jimena', 'Jakel']}/>
-                    <Multiple nombre='Selección múltiple' lista={['Jimena', 'Jakel']}/>
+                    <SeleccionUnica nombre='Selección única' lista={['Respuesta 1', 'Respuesta 2']}/>
+                    <Multiple nombre='Selección múltiple' lista={['Respuesta 1', 'Respuesta 2']}/>
                     <Archivo nombre='Subida de archivos'/>
                     <Button>Guardar</Button>
                 </div>

@@ -11,11 +11,11 @@ export default function Home() {
     return (
         <div className="app container">
             <div className="jumbotron">
-                <h1>Título</h1>
+                <h1>Main Title to complete</h1>
             </div>
             <Nav />
             <div className="jumbotron">
-                <h3>Agregar...</h3>
+                <h2>Generar Encuesta</h2>
                 <AddElement />
                
             </div>

@@ -5,20 +5,6 @@ import FormControl from '@material-ui/core/FormControl';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormGroup from '@material-ui/core/FormGroup';
 
-
-/*Tareas:
-1) Remplazar:  <h1> Pregunta Simple </h1> Por el parametro nombre
-2) Definir parametros como nombre y cantidad de opciones con las opciones
-*/
-
-/*<FormControlLabel value="disabled" disabled control={<Radio />} label="(Disabled option)" />*/
-/*
-<FormControlLabel
-control={<Checkbox/>}
-label="Francisco"
-/>
-*/
-
 const Multiple = ({nombre, lista}) => {
   return (
     <div className='card'>
