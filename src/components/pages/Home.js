@@ -1,30 +1,39 @@
 import React from 'react';
-import Nav from '../elements/Nav'
-import AddElement from '../elements/AddElement'
-import Encuesta from '../elements/Encuesta'
+import AppBar from '../elements/AppBar'
+import Button from '@material-ui/core/Button';
 
 
-export default function Home() {
-    //Tarea Jime: Generar una coleccion que guarde un componente y un string
- 
+class Home extends React.Component {
 
-    return (
-        <div className="app container">
+  render() {
+      
+    
+    return(
+        <>
+            <AppBar/>
             <div className="jumbotron">
-                <h1>Main Title to complete</h1>
+                <h1>
+                    Encuestas
+                </h1>
+                <div>
+                    Meter aca las encuestas
+                </div>
+                <div>
+                    
+                    <Button
+                    type="root"
+                    variant="contained"
+                    color="primary"
+                    href='/crearEncuesta'
+                    >
+                    +
+                    </Button>
+                </div>
             </div>
-            <Nav />
-            <div className="jumbotron">
-                <h2>Generar Encuesta</h2>
-                <AddElement />
-               
-            </div>
-            <div className="jumbotron">
-                <Encuesta/>
-            </div>
-        </div>
-        
-        
-        
-    )
+            
+        </>
+     )
+  }
 }
+
+export default Home
