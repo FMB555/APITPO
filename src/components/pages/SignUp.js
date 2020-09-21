@@ -60,7 +60,7 @@ export default function SignUp() {
           <Add />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Crear cuenta
+          Solicitar Cuenta
         </Typography>
         <form className={classes.form} noValidate>
           <Grid container spacing={2}>
@@ -130,7 +130,7 @@ export default function SignUp() {
             className={classes.submit}
             onClick={()=>{history.push('/home')}}
           >
-            Registrarse
+            Solicitar Registro
           </Button>
           <Grid container justify="flex-end">
             <Grid item>
