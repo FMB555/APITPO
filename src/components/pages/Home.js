@@ -1,39 +1,45 @@
 import React from 'react';
 import AppBar from '../elements/AppBar'
+import Chart from '../elements/Chart'
 import Button from '@material-ui/core/Button';
+import { makeStyles } from '@material-ui/core/styles';
 
+const useStyles = makeStyles((theme) => ({
+    button: {
+        margin: theme.spacing(3, 0, 0),
+        backgroundColor: "#009AA6",
+        color: "#FFFFFF",
+        "&:hover": {
+            backgroundColor: "#00818a",
+            color: "#FFFFFF",
+        }
+    },
+}))
 
-class Home extends React.Component {
+export default function Home() {
+    const classes = useStyles();
 
-  render() {
-      
-    
     return(
         <>
-            <AppBar/>
+            <AppBar />
             <div className="jumbotron">
                 <h1>
                     Encuestas
                 </h1>
                 <div>
-                    Meter aca las encuestas
-                </div>
-                <div>
-                    
                     <Button
                     type="root"
                     variant="contained"
-                    color="primary"
+                    className={classes.button}
                     href='/crearEncuesta'
                     >
-                    +
+                        +
                     </Button>
                 </div>
-            </div>
-            
+                <div>
+                    <Chart/>
+                </div>
+            </div>    
         </>
-     )
-  }
+    )
 }
-
-export default Home

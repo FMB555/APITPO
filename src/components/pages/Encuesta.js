@@ -1,29 +1,46 @@
 import React from 'react';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
-import Button1 from '@material-ui/core/Button';
-import {Button, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Input, Label} from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Input, Label } from 'reactstrap';
 import { Select, MenuItem } from '@material-ui/core';
-
-
-
+import TextField from '@material-ui/core/TextField';
+import Typography from '@material-ui/core/Typography';
+import Paper from '@material-ui/core/Paper';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
 class Encuesta extends React.Component {
 
   encuestas = []
 
-
-
   state={
-    active: '',
-    answers:1,
+    active:'',
+    answersAmount:1,
+    doc:'none',
+    answersList:[],
+    question:'',
   }
 
   preguntaSimple = (text, car) =>{
-        this.encuestas.push(`La pregunta es: ${text}\nCantidad de caracters: ${car}\n`)
-        this.cerrarModal()
+    this.encuestas.push(`La pregunta es: ${text}\nCantidad de caracters: ${car}\n`)
+    this.cerrarModal()
   }
 
   preguntaCompleja = (text) =>{
     this.encuestas.push(`La pregunta es: ${text}\n`)
+    this.cerrarModal()
+  }
+
+  preguntaArchivo = (text) => {
+    this.encuestas.push(`La pregunta es: ${text}\nFormato: ${this.state.doc}\n`)
+    this.cerrarModal()
+  }
+
+  opcionMultiple = (text, ans) => {
+    let form = '';
+    form = form.concat('La pregunta es: ', text.toString(), '\nRespuestas:\n');
+    for (let i = 0; i < ans.length; i++) {
+      form = form.concat(ans[i].toString() + '\n')
+    }
+    this.encuestas.push(form)
     this.cerrarModal()
   }
 
@@ -36,7 +53,7 @@ class Encuesta extends React.Component {
   }
 
   changeAnswers = (cant) => {
-    this.setState({answers: cant.target.value})
+    this.setState({answersAmount: cant.target.value})
   }
 
   createInputs = (cant) => {
@@ -44,43 +61,91 @@ class Encuesta extends React.Component {
     for (let i = 0; i < cant; i++) {
       let number = "Respuesta " + (i+1).toString() + ":";
       lista.push(<Label>{number}</Label>);
-      lista.push(<Input type="text" id="answer" />);
+      lista.push(<TextField id="ANSWERS" placeholder="Respuesta" multiline fullWidth onBlur={(resp) => this.addAnswer(resp.target.value)} />);
     }
     return lista;
   }
 
+  createEncuestas = (encuestas) => {
+    let resultado = [];
+    for (let i = 0; i < encuestas.length; i++) {
+      resultado.push(<Paper  elevation={3}>{encuestas[i].split('\n').map(i => { return <p>{i}</p>})}</Paper>)
+    }
+    return resultado
+  }
+
+  addAnswer = (answer) => {
+    this.state.answersList.push(answer);
+  }
+
+  resetAnswers = () => {
+    this.setState({answersList: []})
+  }
+
+  handleDocChange = (event) => {
+    this.setState({
+      doc: event.target.value,
+    })
+  }
+
+  changeQuestion = (newQuestion) => {
+    this.setState({
+      question: newQuestion.target.value,
+    })
+  }
+  
   render() {
     const modalStyles={
       position: "absolute",
       top: '50%',
       left: '50%',
-      transform: 'translate(-50%, -50%)'
+      transform: 'translate(-50%, -50%)',
+      display: "block",
     }
+
     return(
       <>
-        <div className="app container">
-            <div className="jumbotron">
-                    <h1>Main Title to complete</h1>
-            </div>
+        <div>
+          <AppBar>
+            <Toolbar variant="dense">
+              <ButtonGroup>
+                <Button type="simple" onClick={() => this.abrirModal('simple')}>Pregunta Simple</Button>
+                <Button type="compleja" onClick={() => this.abrirModal('compleja')}>Pregunta Compleja</Button>
+                <Button type="multiple" onClick={() => this.abrirModal('multiple')}>Pregunta Opcion Multiple</Button>
+                <Button type="unica" onClick={() => this.abrirModal('unica')}>Pregunta Seleccion Unica</Button>
+                <Button type="archivo" onClick={() => this.abrirModal('archivo')}>Pregunta Carga De Archivo</Button>
+              </ButtonGroup>
+            </Toolbar>
+          </AppBar>
+
+          <Paper elevation={3} className="jumbotron">
+            <Typography>
+              <TextField
+                id="title"
+                label="Título de la encuesta"
+                placeholder="Título"
+                multiline
+                fullWidth
+              />
+            </Typography>
+            <TextField
+              id="descripcion"
+              label="Descripción"
+              placeholder="Descripción"
+              multiline
+              fullWidth
+            />
+          </Paper>
         
-            <div className="jumbotron">
-                <ButtonGroup>
-                    <Button1 type="simple" onClick={() => this.abrirModal('simple')}>Pregunta Simple</Button1>
-                    <Button1 type="compleja" onClick={() => this.abrirModal('compleja')}>Pregunta Compleja</Button1>
-                    <Button1 type="multiple" onClick={() => this.abrirModal('multiple')}>Pregunta Opcion Multiple</Button1>
-                    <Button1 type="unica" onClick={() => this.abrirModal('unica')}>Pregunta Seleccion Unica</Button1>
-                    <Button1 type="archivo" onClick={() => this.abrirModal('')}>Pregunta Multiple Seleccion Unica</Button1>
-                    <Button1 type="archivo" onClick={() => this.abrirModal('archivo')}>Pregunta Carga De Archivo</Button1>
-                </ButtonGroup>
-            </div>
             <div className="jumbotron" id='ver'>
-                {this.encuestas}
+                {this.createEncuestas(this.encuestas)}
             </div>
             <Button>Guardar</Button>
             <Button>Guardar y Enviar</Button>
             <Button href='/Home'>Volver</Button>
 
         </div>
+
         <Modal id='Pregunta Simple' isOpen={this.state.active === 'simple'} style={modalStyles}>
         <ModalHeader>
             Pregunta Simple
@@ -88,7 +153,12 @@ class Encuesta extends React.Component {
         <ModalBody>
             <FormGroup>
             <Label>Escriba la pregunta</Label>
-            <Input type="text" id="PS"/> 
+            <TextField
+              id="PS"
+              placeholder="Pregunta"
+              multiline
+              fullWidth
+            />
             </FormGroup>
             <FormGroup>
             <Label>Cantidad de caracteres</Label>
@@ -103,13 +173,18 @@ class Encuesta extends React.Component {
         
         <Modal id='Pregunta Compleja' isOpen={this.state.active === 'compleja'} style={modalStyles}>
         <ModalHeader>
-        Pregunta Compleja
+          Pregunta Compleja
         </ModalHeader>
         <ModalBody>
-            <FormGroup>
+          <FormGroup>
             <Label>Escriba la pregunta</Label>
-            <Input type="text" id="PC"/> 
-            </FormGroup>
+              <TextField
+                id="PC"
+                placeholder="Pregunta"
+                multiline
+                fullWidth
+              />
+          </FormGroup>
         </ModalBody>
         <ModalFooter>
             <Button color="primary" onClick={() => this.preguntaCompleja(document.getElementById('PC').value)}>Guardar</Button>
@@ -122,14 +197,20 @@ class Encuesta extends React.Component {
             Pregunta de opción múltiple
         </ModalHeader>
         <ModalBody>
-            <FormGroup>
+          <FormGroup>
             <Label>Escriba la pregunta</Label>
-            <Input type="text" id="Text" />
-            </FormGroup>
-            <FormGroup>
+            <TextField
+              id="MUL"
+              placeholder="Pregunta"
+              multiline
+              fullWidth
+              onBlur={(q) => this.changeQuestion(q)}
+            />
+          </FormGroup>
+          <FormGroup>
             <Label>Ingrese la cantidad de respuestas</Label>
-            <Input type="text" id="Cant" value={this.state.answers} onChange={(c) => this.changeAnswers(c)}/>
-            </FormGroup>
+            <Input type="text" id="Cant" value={this.state.answersAmount} onInput={(c) => this.changeAnswers(c)}/>
+          </FormGroup>
         </ModalBody>
         <ModalFooter>
             <Button color="primary" onClick={() => this.abrirModal('respuestas')}>Continuar</Button>
@@ -142,14 +223,20 @@ class Encuesta extends React.Component {
             Pregunta de opción única
         </ModalHeader>
         <ModalBody>
-            <FormGroup>
+          <FormGroup>
             <Label>Escriba la pregunta</Label>
-            <Input type="text" id="Text" />
-            </FormGroup>
-            <FormGroup>
+            <TextField
+              id="MUL"
+              placeholder="Pregunta"
+              multiline
+              fullWidth
+              onBlur={(q) => this.changeQuestion(q)}
+            />
+          </FormGroup>
+          <FormGroup>
             <Label>Ingrese la cantidad de respuestas</Label>
-            <Input type="text" id="Cant" value={this.state.answers} onChange={(c) => this.changeAnswers(c)} />
-            </FormGroup>
+            <Input type="text" id="Cant" value={this.state.answersAmount} onChange={(c) => this.changeAnswers(c)} />
+          </FormGroup>
         </ModalBody>
         <ModalFooter>
             <Button color="primary" onClick={() => {this.abrirModal('respuestas')}} >Continuar</Button>
@@ -162,13 +249,15 @@ class Encuesta extends React.Component {
             Escriba las respuestas
         </ModalHeader>
         <ModalBody>
-            <FormGroup>
-            {this.createInputs(this.state.answers).map((answer) => answer)}
-            </FormGroup>
+          <FormGroup>
+            {this.createInputs(this.state.answersAmount).map((answer) => answer)}
+          </FormGroup>
         </ModalBody>
         <ModalFooter>
-            <Button color="primary">Guardar</Button>
-            <Button color="secondary" onClick={() => this.cerrarModal()}>Cancelar</Button>
+          <Button color="primary" onClick={() => {this.opcionMultiple(this.state.question, this.state.answersList); this.resetAnswers()}}>
+            Guardar
+          </Button>
+          <Button color="secondary" onClick={() => this.cerrarModal()}>Cancelar</Button>
         </ModalFooter>
         </Modal>
 
@@ -179,21 +268,26 @@ class Encuesta extends React.Component {
         <ModalBody>
             <FormGroup>
             <Label>Escriba la pregunta</Label>
-            <Input type="text" id="arc" />
+            <TextField
+              id="ARC"
+              placeholder="Pregunta"
+              multiline
+              fullWidth
+            />
             </FormGroup>
             <FormGroup>
             <Label>Seleccione el tipo de documento</Label>
             <p></p>
-            <Select id='type'>
-                <MenuItem value='word'>Word</MenuItem>
-                <MenuItem value='pdf'>PDF</MenuItem>
-                <MenuItem value='excel'>Excel</MenuItem>
-                <MenuItem value="imagen">jpg/pgn</MenuItem>
+            <Select id='TYPE' onChange={this.handleDocChange}>
+                <MenuItem value='Word'>Word</MenuItem>
+                <MenuItem value='PDF'>PDF</MenuItem>
+                <MenuItem value='Excel'>Excel</MenuItem>
+                <MenuItem value="jpg/png">jpg/png</MenuItem>
             </Select>
             </FormGroup>
         </ModalBody>
         <ModalFooter>
-            <Button color="primary">Guardar</Button>
+            <Button color="primary" onClick={() => this.preguntaArchivo(document.getElementById('ARC').value)}>Guardar</Button>
             <Button color="secondary" onClick={() => this.cerrarModal()}>Cancelar</Button>
         </ModalFooter>
         </Modal>
@@ -202,4 +296,4 @@ class Encuesta extends React.Component {
   }
 }
 
-export default Encuesta
+export default Encuesta;

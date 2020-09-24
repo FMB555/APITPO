@@ -1,5 +1,4 @@
 import React from 'react';
-import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
@@ -8,11 +7,11 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
-import AccountCircle from '@material-ui/icons/AccountCircle';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { useHistory } from 'react-router-dom';
+import logo from "../logos/isologotipo.png";
 
 function Copyright() {
   return (
@@ -37,7 +36,6 @@ const useStyles = makeStyles((theme) => ({
   avatar: {
     margin: theme.spacing(1),
     backgroundColor: "#009CA6",
-    //theme.palette.secondary.main
   },
   form: {
     width: '100%', // Fix IE 11 issue.
@@ -45,6 +43,11 @@ const useStyles = makeStyles((theme) => ({
   },
   submit: {
     margin: theme.spacing(3, 0, 2),
+    backgroundColor: "#009AA6",
+    color: "#FFFFFF",
+    "&:hover": {
+      backgroundColor: "#00818a",
+    }
   },
 }));
 
@@ -56,9 +59,7 @@ export default function SignIn() {
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className={classes.paper}>
-        <Avatar className={classes.avatar}>
-          <AccountCircle />
-        </Avatar>
+        <img src={logo} alt="fundación ObservatorioPyme" height="120" />
         <Typography component="h1" variant="h5">
           Iniciar sesión
         </Typography>
