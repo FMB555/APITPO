@@ -1,13 +1,21 @@
 import React from 'react';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Input, Label } from 'reactstrap';
-import { Select, MenuItem } from '@material-ui/core';
+import { Select, MenuItem, Drawer } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
+import { makeStyles } from '@material-ui/core/styles';
+import logo from "../logos/isologotipo-negativo.png";
+
+import clsx from 'clsx';
+
+
+
 class Encuesta extends React.Component {
+  
 
   encuestas = []
 
@@ -59,7 +67,7 @@ class Encuesta extends React.Component {
   createInputs = (cant) => {
     let lista = [];
     for (let i = 0; i < cant; i++) {
-      let number = "Respuesta " + (i+1).toString() + ":";
+      let number = "Opcion " + (i+1).toString() + ":";
       lista.push(<Label>{number}</Label>);
       lista.push(<TextField id="ANSWERS" placeholder="Respuesta" multiline fullWidth onBlur={(resp) => this.addAnswer(resp.target.value)} />);
     }
@@ -94,7 +102,20 @@ class Encuesta extends React.Component {
     })
   }
   
+  
+ 
+  
   render() {
+    const buttonStyles={
+      margin: '5px',
+      backgroundColor: "#009AA6",
+      color: "#FFFFFF",
+      "&:hover": {
+          backgroundColor: "#00818a",
+          color: "#FFFFFF",
+      },
+    }
+
     const modalStyles={
       position: "absolute",
       top: '50%',
@@ -103,18 +124,27 @@ class Encuesta extends React.Component {
       display: "block",
     }
 
+    const appStyles={
+      backgroundColor: "#009AA6",
+    }
+
+
     return(
       <>
         <div>
-          <AppBar>
-            <Toolbar variant="dense">
+          <AppBar style={appStyles}>
+            <Toolbar variant="dense" color = 'green'>
+            
+              <img src={logo} alt="isologotipo negativo" height="50"/>
               <ButtonGroup>
-                <Button type="simple" onClick={() => this.abrirModal('simple')}>Pregunta Simple</Button>
-                <Button type="compleja" onClick={() => this.abrirModal('compleja')}>Pregunta Compleja</Button>
-                <Button type="multiple" onClick={() => this.abrirModal('multiple')}>Pregunta Opcion Multiple</Button>
-                <Button type="unica" onClick={() => this.abrirModal('unica')}>Pregunta Seleccion Unica</Button>
-                <Button type="archivo" onClick={() => this.abrirModal('archivo')}>Pregunta Carga De Archivo</Button>
+                <Button style={buttonStyles} type="simple" onClick={() => this.abrirModal('simple')}>Pregunta Simple</Button>
+                <Button style={buttonStyles} type="compleja" onClick={() => this.abrirModal('compleja')}>Pregunta Compleja</Button>
+                <Button style={buttonStyles} type="multiple" onClick={() => this.abrirModal('multiple')}>Pregunta Opcion Multiple</Button>
+                <Button style={buttonStyles} type="unica" onClick={() => this.abrirModal('unica')}>Pregunta Seleccion Unica</Button>
+                <Button style={buttonStyles} type="archivo" onClick={() => this.abrirModal('archivo')}>Pregunta Carga De Archivo</Button>
               </ButtonGroup>
+            
+
             </Toolbar>
           </AppBar>
 
@@ -136,161 +166,16 @@ class Encuesta extends React.Component {
               fullWidth
             />
           </Paper>
-        
+          
             <div className="jumbotron" id='ver'>
                 {this.createEncuestas(this.encuestas)}
             </div>
-            <Button>Guardar</Button>
-            <Button>Guardar y Enviar</Button>
-            <Button href='/Home'>Volver</Button>
-
+            <Button style={buttonStyles}>Borrar Pregunta</Button>
+            <Button style={buttonStyles}>Guardar</Button>
+            <Button style={buttonStyles} >Guardar y Publicar</Button>
+            <Button style={buttonStyles} href='/Home'>Volver</Button>
+            
         </div>
-
-        <Modal id='Pregunta Simple' isOpen={this.state.active === 'simple'} style={modalStyles}>
-        <ModalHeader>
-            Pregunta Simple
-        </ModalHeader>
-        <ModalBody>
-            <FormGroup>
-            <Label>Escriba la pregunta</Label>
-            <TextField
-              id="PS"
-              placeholder="Pregunta"
-              multiline
-              fullWidth
-            />
-            </FormGroup>
-            <FormGroup>
-            <Label>Cantidad de caracteres</Label>
-            <Input type="number" id="PSC"/> 
-            </FormGroup>
-        </ModalBody>
-        <ModalFooter>
-            <Button color="primary" onClick={() => this.preguntaSimple(document.getElementById('PS').value,document.getElementById('PSC').value)}>Guardar</Button>
-            <Button color="secondary" onClick={() => this.cerrarModal()}>Cancelar</Button>
-        </ModalFooter>
-        </Modal>
-        
-        <Modal id='Pregunta Compleja' isOpen={this.state.active === 'compleja'} style={modalStyles}>
-        <ModalHeader>
-          Pregunta Compleja
-        </ModalHeader>
-        <ModalBody>
-          <FormGroup>
-            <Label>Escriba la pregunta</Label>
-              <TextField
-                id="PC"
-                placeholder="Pregunta"
-                multiline
-                fullWidth
-              />
-          </FormGroup>
-        </ModalBody>
-        <ModalFooter>
-            <Button color="primary" onClick={() => this.preguntaCompleja(document.getElementById('PC').value)}>Guardar</Button>
-            <Button color="secondary" onClick={() => this.cerrarModal()}>Cancelar</Button>
-        </ModalFooter>
-        </Modal>
-
-        <Modal id="Opcion múltipe" isOpen={this.state.active === 'multiple'} style={modalStyles}>
-        <ModalHeader>
-            Pregunta de opción múltiple
-        </ModalHeader>
-        <ModalBody>
-          <FormGroup>
-            <Label>Escriba la pregunta</Label>
-            <TextField
-              id="MUL"
-              placeholder="Pregunta"
-              multiline
-              fullWidth
-              onBlur={(q) => this.changeQuestion(q)}
-            />
-          </FormGroup>
-          <FormGroup>
-            <Label>Ingrese la cantidad de respuestas</Label>
-            <Input type="text" id="Cant" value={this.state.answersAmount} onInput={(c) => this.changeAnswers(c)}/>
-          </FormGroup>
-        </ModalBody>
-        <ModalFooter>
-            <Button color="primary" onClick={() => this.abrirModal('respuestas')}>Continuar</Button>
-            <Button color="secondary" onClick={() => this.cerrarModal()}>Cancelar</Button>
-        </ModalFooter>
-        </Modal>
-
-        <Modal id="Opción única" isOpen={this.state.active === 'unica'} style={modalStyles}>
-        <ModalHeader>
-            Pregunta de opción única
-        </ModalHeader>
-        <ModalBody>
-          <FormGroup>
-            <Label>Escriba la pregunta</Label>
-            <TextField
-              id="MUL"
-              placeholder="Pregunta"
-              multiline
-              fullWidth
-              onBlur={(q) => this.changeQuestion(q)}
-            />
-          </FormGroup>
-          <FormGroup>
-            <Label>Ingrese la cantidad de respuestas</Label>
-            <Input type="text" id="Cant" value={this.state.answersAmount} onChange={(c) => this.changeAnswers(c)} />
-          </FormGroup>
-        </ModalBody>
-        <ModalFooter>
-            <Button color="primary" onClick={() => {this.abrirModal('respuestas')}} >Continuar</Button>
-            <Button color="secondary" onClick={() => this.cerrarModal()}>Cancelar</Button>
-        </ModalFooter>
-        </Modal>
-
-        <Modal id="Respuestas" isOpen={this.state.active === 'respuestas'} style={modalStyles}>
-        <ModalHeader>
-            Escriba las respuestas
-        </ModalHeader>
-        <ModalBody>
-          <FormGroup>
-            {this.createInputs(this.state.answersAmount).map((answer) => answer)}
-          </FormGroup>
-        </ModalBody>
-        <ModalFooter>
-          <Button color="primary" onClick={() => {this.opcionMultiple(this.state.question, this.state.answersList); this.resetAnswers()}}>
-            Guardar
-          </Button>
-          <Button color="secondary" onClick={() => this.cerrarModal()}>Cancelar</Button>
-        </ModalFooter>
-        </Modal>
-
-        <Modal id="Archivo" isOpen={this.state.active === 'archivo'} style={modalStyles}>
-        <ModalHeader>
-            Pregunta con carga de archivos
-        </ModalHeader>
-        <ModalBody>
-            <FormGroup>
-            <Label>Escriba la pregunta</Label>
-            <TextField
-              id="ARC"
-              placeholder="Pregunta"
-              multiline
-              fullWidth
-            />
-            </FormGroup>
-            <FormGroup>
-            <Label>Seleccione el tipo de documento</Label>
-            <p></p>
-            <Select id='TYPE' onChange={this.handleDocChange}>
-                <MenuItem value='Word'>Word</MenuItem>
-                <MenuItem value='PDF'>PDF</MenuItem>
-                <MenuItem value='Excel'>Excel</MenuItem>
-                <MenuItem value="jpg/png">jpg/png</MenuItem>
-            </Select>
-            </FormGroup>
-        </ModalBody>
-        <ModalFooter>
-            <Button color="primary" onClick={() => this.preguntaArchivo(document.getElementById('ARC').value)}>Guardar</Button>
-            <Button color="secondary" onClick={() => this.cerrarModal()}>Cancelar</Button>
-        </ModalFooter>
-        </Modal>
     </>
      )
   }

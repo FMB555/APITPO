@@ -16,6 +16,7 @@ import MoreIcon from '@material-ui/icons/MoreVert';
 import DirectionsWalkIcon from '@material-ui/icons/DirectionsWalk';
 import { useHistory } from 'react-router-dom';
 import logo from "../logos/isologotipo-negativo.png";
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 
 const useStyles = makeStyles((theme) => ({
   appbar: {
@@ -89,7 +90,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function PrimarySearchAppBar() {
+export default function PrimarySearchAppBar(props) {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
@@ -116,20 +117,7 @@ export default function PrimarySearchAppBar() {
   };
 
   const menuId = 'primary-search-account-menu';
-  const renderMenu = (
-    <Menu
-      anchorEl={anchorEl}
-      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-      id={menuId}
-      keepMounted
-      transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-      open={isMenuOpen}
-      onClose={handleMenuClose}
-    >
-      <MenuItem onClick={handleMenuClose}>Mi Cuenta</MenuItem>
-      <MenuItem onClick={() => history.push("/")}>Cerrar Sesion</MenuItem>
-    </Menu>
-  );
+  
 
   const mobileMenuId = 'primary-search-account-menu-mobile';
   const renderMobileMenu = (
@@ -198,15 +186,26 @@ export default function PrimarySearchAppBar() {
               aria-label="account of current user"
               aria-controls={menuId}
               aria-haspopup="true"
+              href = 'SignUp'
+              color="inherit"
+            >
+              <AddCircleOutlineIcon />
+            </IconButton>
+              
+            <IconButton
+              edge="end"
+              aria-label="account of current user"
+              aria-controls={menuId}
+              aria-haspopup="true"
               href = '/'
               color="inherit"
             >
-
-            </IconButton>
               <DirectionsWalkIcon />
-
+            </IconButton> 
+              
           </div>
           <div className={classes.sectionMobile}>
+            
             <IconButton
               aria-label="show more"
               aria-controls={mobileMenuId}
@@ -215,12 +214,13 @@ export default function PrimarySearchAppBar() {
               color="inherit"
             >
               <MoreIcon />
+            
             </IconButton>
           </div>
         </Toolbar>
       </AppBar>
-      {renderMobileMenu}
-      {renderMenu}
+      
+      
     </div>
   );
 }

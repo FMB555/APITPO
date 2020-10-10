@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
     }
   }
 }));
-const cards = [["Título 1", "12/9/2020"], ["Título 2", "23/9/2020"], ["Título 3", 3],
+const cards = [["Tu Vida con corona virus", "12/9/2020"], ["Título 2", "23/9/2020"], ["Título 3", 3],
                ["Título 4", 4], ["Título 5", 5], ["Título 6", 6]];
 
 export default function Deposits() {
