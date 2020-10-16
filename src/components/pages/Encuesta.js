@@ -148,6 +148,7 @@ class Encuesta extends React.Component {
             </Toolbar>
           </AppBar>
 
+
           <Paper elevation={3} className="jumbotron">
             <Typography>
               <TextField
