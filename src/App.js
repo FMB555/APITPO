@@ -1,4 +1,5 @@
 import React from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
@@ -7,6 +8,7 @@ import signUp from './components/pages/SignUp';
 import home from "./components/pages/Home";
 import crearEncuesta from "./components/pages/Encuesta";
 import E from "./components/pages/E";
+import appbar from "./components/pages/appbar";
 
 class App extends React.Component {
   render() {
@@ -19,6 +21,7 @@ class App extends React.Component {
             <Route path='/home' component={home} />
             <Route path='/crearEncuesta' component={crearEncuesta} />
             <Route path='/E' component={E} />
+            <Route path="/Appbar" component={appbar} />
           </Switch>
         </div>
       </Router>
