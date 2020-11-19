@@ -5,25 +5,18 @@ import { Modal, ModalHeader, ModalBody, ModalFooter,
          FormGroup, Input, Label } from 'reactstrap';
 
 //Material UI Core imports.
-import { ButtonGroup, Select, MenuItem, Drawer, InputLabel, FormControl,
-         Button, TextField, Typography, Paper, AppBar, Toolbar,
-         withStyles, IconButton, List, ListItem, ListItemIcon, ListItemText,
-         Divider, Switch, FormControlLabel } from '@material-ui/core';
+import { Select, MenuItem, Drawer, InputLabel, FormControl, Button,
+        TextField, Typography, Paper, AppBar, Toolbar, withStyles,
+        IconButton, List, ListItem, ListItemIcon, ListItemText, Divider, 
+        Switch, FormControlLabel } from '@material-ui/core';
 
 //Material UI Icons imports.
-import { ChevronRight, ChevronLeft, ExitToApp, ShortText,
+import { ChevronRight, ChevronLeft, /*ExitToApp,*/ ShortText,
          Subject, CheckBox, RadioButtonChecked, Description,
          Delete, DoneAll, LooksOne, LinearScale,
          Email, AddToPhotos, FormatListNumbered, ScatterPlot } from '@material-ui/icons';
 
 import clsx from 'clsx';
-
-/*
-<Button style={buttonStyles}>Borrar Pregunta</Button>
-<Button style={buttonStyles}>Guardar</Button>
-<Button style={buttonStyles} >Guardar y Publicar</Button>
-<Button style={buttonStyles} href='/Home'>Volver</Button>
-*/
 
 const drawerWidth = 300;
 const styles = (theme) => ({
@@ -114,6 +107,7 @@ class Encuesta extends React.Component {
 
 state={
     encuestas: ['Título del formulario', 'Descripción'],
+    shown: [false, false],
     formName:'Encuesta sin nombre',
     description: 'Descripcion',
     active:'',
@@ -129,18 +123,27 @@ state={
   answersList = []
 
   preguntaSimple = (text, car) =>{
-    this.setState({encuestas: this.state.encuestas.concat([[this.questionType, text, car, false]])});
+    this.setState({
+      encuestas: this.state.encuestas.concat([[this.questionType, text, car, false]]),
+      shown: this.state.shown.concat([false])
+    });
     this.cerrarModal()
   }
 
   preguntaCompleja = (text) =>{
     /* Compleja, numérica, email, carga de imagen */
-    this.setState({encuestas: this.state.encuestas.concat([[this.questionType, text, false]])})
+    this.setState({
+      encuestas: this.state.encuestas.concat([[this.questionType, text, false]]),
+      shown: this.state.shown.concat([false])
+    })
     this.cerrarModal()
   }
 
   preguntaArchivo = (text) => {
-    this.setState({encuestas: this.state.encuestas.concat([[this.questionType, text, this.docType, false]])})
+    this.setState({
+      encuestas: this.state.encuestas.concat([[this.questionType, text, this.docType, false]]),
+      shown: this.state.shown.concat([false])
+    })
     this.cerrarModal()
   }
 
@@ -151,13 +154,19 @@ state={
       add.push(ans[i]);
     }
     add.push(false)
-    this.setState({encuestas: this.state.encuestas.concat([add])})
+    this.setState({
+      encuestas: this.state.encuestas.concat([add]),
+      shown: this.state.shown.concat([false])
+    })
     this.cerrarModal()
   }
 
   preguntaRango = (text) => {
     /* rango, calificación */
-    this.setState({encuestas: this.state.encuestas.concat([[this.questionType, text, this.state.min, this.state.max, false]])})
+    this.setState({
+      encuestas: this.state.encuestas.concat([[this.questionType, text, this.state.min, this.state.max, false]]),
+      shown: this.state.shown.concat([false])
+    })
     this.cerrarModal()
   }
 
@@ -177,8 +186,8 @@ state={
     let lista = [];
     for (let i = 0; i < cant; i++) {
       let number = "Opcion " + (i+1).toString() + ":";
-      lista.push(<Label>{number}</Label>);
-      lista.push(<TextField id="ANSWERS" placeholder="Respuesta" multiline fullWidth onBlur={(resp) => this.answersList.push(resp.target.value)} />);
+      lista.push(<Label key={"Ans" + i}>{number}</Label>);
+      lista.push(<TextField key={"ANSWERS" + i} placeholder="Respuesta" multiline fullWidth onBlur={(resp) => this.answersList.push(resp.target.value)} />);
     }
     return lista;
   }
@@ -193,14 +202,18 @@ state={
       console.log(this.state.encuestas)
       console.log(this.state.encuestas[i])
       let preg = this.state.encuestas[i]
-      let paper = <Paper elevation={3}>
+      let paper = <Paper elevation={3} onMouseEnter={() => this.showButtons(preg, true)} onMouseLeave={() => this.showButtons(preg, false)}>
           <p style={{verticalAlign:'top', textAlign:'right'}}>{this.state.encuestas.indexOf(preg) - 1}</p>
           {add.map(k => {return <p>{k}</p>})}
-          <IconButton>
-            <Delete onClick={() => this.removeQuestion(preg)}/>
-          </IconButton>
-          <FormControlLabel control={<Switch checked={this.state.encuestas[i][this.state.encuestas[i].length - 1]}
-            onClick={() => this.changeOblig(i)} color="primary" />} label="Obligatorio" />
+          { this.findShown(preg) ?
+            <div>
+              <IconButton>
+                <Delete onClick={() => this.removeQuestion(preg)}/>
+              </IconButton>
+              <FormControlLabel control={<Switch checked={this.state.encuestas[i][this.state.encuestas[i].length - 1]}
+                onClick={() => this.changeOblig(preg)} color="primary" />} label="Obligatorio" />
+            </div>
+           : null }
         </Paper>
       resultado.push(paper)
       add = []
@@ -209,12 +222,13 @@ state={
   }
 
   changeOblig = (i) => {
-    let j = this.state.encuestas[i].length - 1;
-    console.log(i, this.state.encuestas[i][j]);
+    let pos = this.state.encuestas.indexOf(i)
+    let j = this.state.encuestas[pos].length - 1;
+    console.log(pos, this.state.encuestas[pos][j]);
     let enc = this.state.encuestas;
-    enc[i][j] = enc[i][j] ? false : true;
+    enc[pos][j] = enc[pos][j] ? false : true;
     this.setState({encuestas: enc});
-    console.log(i, this.state.encuestas[i][j]);
+    console.log(pos, this.state.encuestas[pos][j]);
   }
 
   changeFormName = (name) => {
@@ -260,25 +274,36 @@ state={
       max: newMax.target.value,
     })
   }
+
+  showButtons = (preg, show) => {
+    let pos = this.state.encuestas.indexOf(preg)
+    let len = this.state.encuestas[pos].length - 1
+    let copy = [...this.state.shown]
+    let change = {...copy[pos]}
+    change[len] = show
+    copy[pos] = change
+    this.setState({ shown: copy })
+  };
+
+  findShown = (preg) => {
+    let pos = this.state.encuestas.indexOf(preg)
+    let len = this.state.encuestas[pos].length -1
+    return this.state.shown[pos][len]
+  }
+
   
+  /*
+  const paperStyles = {
+    maxWidth: '50%',
+    margin: 'auto',
+  }
+  */
+
   render() {
     const { classes } = this.props;
-    const buttonStyles={
-      margin: '5px',
-      backgroundColor: "#009AA6",
-      color: "#FFFFFF",
-      "&:hover": {
-          backgroundColor: "#00818a",
-          color: "#FFFFFF",
-      },
-    }
+    
 
     const titleStyles = {
-      maxWidth: '50%',
-      margin: 'auto',
-    }
-
-    const paperStyles = {
       maxWidth: '50%',
       margin: 'auto',
     }
@@ -289,6 +314,16 @@ state={
       left: '50%',
       transform: 'translate(-50%, -50%)',
       display: "block",
+    }
+
+    const buttonStyles={
+      margin: '5px',
+      backgroundColor: "#009AA6",
+      color: "#FFFFFF",
+      "&:hover": {
+          backgroundColor: "#00818a",
+          color: "#FFFFFF",
+      },
     }
 
     const formControlStyles={
@@ -320,8 +355,8 @@ state={
               >
                 <ChevronRight />
               </IconButton>
-              <Typography variant="h6" noWrap center>
-                Crear encuesta
+              <Typography variant="h6" noWrap>
+                Crear o modificar encuesta
               </Typography>
             </Toolbar>
           </AppBar>
@@ -398,26 +433,30 @@ state={
 
           <div className={classes.content}>
             <Paper elevation={3} style={titleStyles} className={classes.content}>
-              <Typography>
                 <TextField
                   id="title"
                   defaultValue={this.state.encuestas[0]}
                   multiline
                   fullWidth
                   inputProps={{style: {fontSize: 30, paddingTop: 5}}}
-                  onBlur={(name) => this.changeFormName(0,name)}
+                  onBlur={(name) => this.changeFormName(name)}
                 />
-              </Typography>
-              <TextField
-                id="descripcion"
-                defaultValue='Descripcion'
-                multiline
-                fullWidth
-                onBlur={(desc) => this.changeFormDescription(0,desc)}
-              />
+                <TextField
+                  id="descripcion"
+                  defaultValue={this.state.encuestas[1]}
+                  multiline
+                  fullWidth
+                  onBlur={(desc) => this.changeFormDescription(desc)}
+                />
             </Paper>
             <div className={classes.content} id='ver'>
               {this.createEncuestas(this.encuestas)}
+            </div>
+            <div>
+              <Button style={buttonStyles}>Borrar Pregunta</Button>
+              <Button style={buttonStyles}>Guardar</Button>
+              <Button style={buttonStyles} >Guardar y Publicar</Button>
+              <Button style={buttonStyles} href='/Home'>Volver</Button>
             </div>
           </div>
         </div>
@@ -631,11 +670,11 @@ state={
             </FormGroup>
             <FormGroup>
               <Label>Valor mínimo:</Label>
-              <Input type="number" id="min" value={this.state.min} onInput={(c) => this.changeMin(c)}/>
+              <Input type="number" id="min" defaultValue={this.state.min} onInput={(c) => this.changeMin(c)}/>
             </FormGroup>
             <FormGroup>
               <Label>Valor máximo:</Label>
-              <Input type="number" id="max" value={this.state.max} onInput={(c) => this.changeMax(c)}/>
+              <Input type="number" id="max" defaultValue={this.state.max} onInput={(c) => this.changeMax(c)}/>
             </FormGroup>
           </ModalBody>
           <ModalFooter>
