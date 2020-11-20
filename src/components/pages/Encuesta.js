@@ -8,13 +8,14 @@ import { Modal, ModalHeader, ModalBody, ModalFooter,
 import { Select, MenuItem, Drawer, InputLabel, FormControl, Button,
         TextField, Typography, Paper, AppBar, Toolbar, withStyles,
         IconButton, List, ListItem, ListItemIcon, ListItemText, Divider, 
-        Switch, FormControlLabel } from '@material-ui/core';
+        Switch, FormControlLabel, createStyles } from '@material-ui/core';
 
 //Material UI Icons imports.
 import { ChevronRight, ChevronLeft, /*ExitToApp,*/ ShortText,
          Subject, CheckBox, RadioButtonChecked, Description,
          Delete, DoneAll, LooksOne, LinearScale,
-         Email, AddToPhotos, FormatListNumbered, ScatterPlot } from '@material-ui/icons';
+         Email, AddToPhotos, FormatListNumbered, ScatterPlot,
+         Check } from '@material-ui/icons';
 
 import clsx from 'clsx';
 
@@ -80,9 +81,56 @@ const styles = (theme) => ({
     flexGrow: 1,
     padding: theme.spacing(3),
     marginTop: 55,
-    minWidth: '60%'
+    minWidth: '60%',
+    borderRadius: "15px"
   },
+  textfield: {
+    flexGrow: 1,
+    height: "auto",
+    fontSize: 30,
+    marginBottom: 10
+  }
 });
+
+const useStyles = createStyles({
+  content: {
+    flexGrow: 1,
+    margin: "auto",
+    marginBottom: 20,
+    maxWidth: "62%",
+    borderRadius: "30px"
+  },
+  index: {
+    verticalAlign: 'top',
+    textAlign: 'right',
+    backgroundColor: "#009AA6",
+    color: "#FFF",
+    borderRadius: "30px 30px 5px 5px"
+  },
+  title: {
+    width: "95%",
+    wordWrap: "break-word",
+    textAlign: "justify",
+    paddingRight: 20,
+    paddingLeft: 20,
+    paddingBottom: 9,
+    margin: "auto",
+    fontSize: 22,
+  },
+  item: {
+    width: "95%",
+    wordWrap: "break-word",
+    textAlign: "justify",
+    paddingRight: 20,
+    paddingLeft: 20,
+    paddingBottom: 9,
+    margin: "auto"
+  },
+  obligatorio: {
+    color: "#009aa6",
+    track: "#00acba"
+  }
+})
 
 class Encuesta extends React.Component {
 
@@ -170,6 +218,105 @@ state={
     this.cerrarModal()
   }
 
+  //Ahora, para darles un diseño especial a cada una...
+  
+  //Ejecuta la función correspondiente.
+  sendDesign = (pregunta) => {
+    let ans = []
+    let p = pregunta.slice(1,-1);
+    console.log("pregunta", pregunta)
+    console.log("p", p)
+    switch (pregunta[0]) {
+      case 'short_text':
+        ans.push(this.showSimple(p));
+        return ans;
+      case 'long_text':
+      case 'number':
+      case 'email':
+      case 'img':
+        ans = this.showCompleja(p);
+        return ans;
+      case 'check':
+      case 'select':
+        ans = this.showMultiple(p);
+        return ans;
+      case 'radio':
+        ans = this.showUnica(p);
+        return ans;
+      case 'file':
+        ans = this.showFile(p);
+        return ans;
+      case 'true_false':
+        ans = this.showTrueFalse(p);
+        return ans;
+      case 'range_number':
+      case 'calificacion':
+        ans = this.showRange(p);
+        return ans;
+      default:
+        return ans;
+    }
+  }
+
+  //Pregunta Simple.
+  showSimple = (preg) => {
+    let data = [];
+    data.push(<p style={useStyles.title}>{preg[0]}</p>)
+    data.push(<p style={useStyles.item}>Cantidad de caracteres: {preg[1]}</p>)
+    console.log(data[0])
+    console.log(data[1])
+    return data
+  }
+
+  showCompleja = (preg) => {
+    let ans = [];
+    ans.push(<p style={useStyles.title}>{preg[0]}</p>)
+    console.log(ans)
+    return ans
+  }
+
+  showMultiple = (preg) => {
+    let ans = []
+    ans.push(<p style={useStyles.title}>{preg[0]}</p>)
+    for (let i = 1; i < preg.length; i++) {
+      ans.push(<p style={useStyles.item}> <CheckBox /> {preg[i]} </p>)
+    }
+    return ans
+  }
+
+  showUnica = (preg) => {
+    let ans = []
+    ans.push(<p style={useStyles.title}>{preg[0]}</p>)
+    for (let i = 1; i < preg.length; i++) {
+      ans.push(<p style={useStyles.item}> <RadioButtonChecked style={{color: "grey"}}/> {preg[i]} </p>)
+    }
+    return ans
+  }
+
+  showFile = (preg) => {
+    let ans = []
+    ans.push(<p style={useStyles.title}>{preg[0]}</p>)
+    ans.push(<p style={useStyles.item}>Tipo de archivo: {preg[1]}</p>)
+    return ans
+  }
+
+  showTrueFalse = (preg) => {
+    let ans = []
+    ans.push(<p style={useStyles.title}>{preg[0]}</p>)
+    for (let i = 1; i < preg.length; i++) {
+      ans.push(<p style={useStyles.item}> <Check /> {preg[i]} </p>)
+    }
+    return ans
+  }
+
+  showRange = (preg) => {
+    let ans = []
+    ans.push(<p style={useStyles.title}>{preg[0]}</p>)
+    ans.push(<p style={useStyles.item}>Mínimo: {preg[1]}</p>)
+    ans.push(<p style={useStyles.item}>Máximo: {preg[2]}</p>)
+    return ans
+  }
+
   abrirModal = (id) => {
     this.setState({active: id});
   }
@@ -191,6 +338,11 @@ state={
     }
     return lista;
   }
+  
+  /* Original:
+    {preg.slice(1,2).map(m => {return <p style={useStyles.title}>{m}</p>})}
+    {preg.slice(2).map(k => {return <p style={useStyles.item}>{k}</p>})}
+  */
 
   createEncuestas = () => {
     let resultado = [];
@@ -199,21 +351,20 @@ state={
       for (let j = 1; j < (this.state.encuestas[i].length - 1); j++) {
         add.push(this.state.encuestas[i][j])
       }
-      console.log(this.state.encuestas)
-      console.log(this.state.encuestas[i])
       let preg = this.state.encuestas[i]
-      let paper = <Paper elevation={3} onMouseEnter={() => this.showButtons(preg, true)} onMouseLeave={() => this.showButtons(preg, false)}>
-          <p style={{verticalAlign:'top', textAlign:'right'}}>{this.state.encuestas.indexOf(preg) - 1}</p>
-          {add.map(k => {return <p>{k}</p>})}
-          { this.findShown(preg) ?
-            <div>
-              <IconButton>
-                <Delete onClick={() => this.removeQuestion(preg)}/>
-              </IconButton>
-              <FormControlLabel control={<Switch checked={this.state.encuestas[i][this.state.encuestas[i].length - 1]}
-                onClick={() => this.changeOblig(preg)} color="primary" />} label="Obligatorio" />
-            </div>
-           : null }
+      let paper = <Paper elevation={3} onMouseEnter={() => this.showButtons(preg, true)}
+          onMouseLeave={() => this.showButtons(preg, false)} style={useStyles.content}>
+          <div style={useStyles.index}> <p style={{marginRight: 10, fontWeight: "bolder"}}>{this.state.encuestas.indexOf(preg) - 1}</p> </div>
+            {this.sendDesign(preg).map(k => {return k})}
+            { this.findShown(preg) ?
+              <div>
+                <IconButton style={{margin: 10}}>
+                  <Delete onClick={() => this.removeQuestion(preg)} style={useStyles.obligatorio}/>
+                </IconButton>
+                <FormControlLabel control={<Switch checked={this.state.encuestas[i][this.state.encuestas[i].length - 1]}
+                  onClick={() => this.changeOblig(preg)} style={useStyles.obligatorio} />} label="Obligatorio" />
+              </div>
+            : null }
         </Paper>
       resultado.push(paper)
       add = []
@@ -221,14 +372,14 @@ state={
     return resultado
   }
 
+
+
   changeOblig = (i) => {
     let pos = this.state.encuestas.indexOf(i)
     let j = this.state.encuestas[pos].length - 1;
-    console.log(pos, this.state.encuestas[pos][j]);
     let enc = this.state.encuestas;
     enc[pos][j] = enc[pos][j] ? false : true;
     this.setState({encuestas: enc});
-    console.log(pos, this.state.encuestas[pos][j]);
   }
 
   changeFormName = (name) => {
@@ -259,7 +410,6 @@ state={
 
   removeQuestion = (find) => {
     const index = this.state.encuestas.indexOf(find);
-    console.log(index);
     this.setState({encuestas: this.state.encuestas.filter(x => x !== find)})
   }
 
@@ -330,7 +480,6 @@ state={
       minWidth: 120,
     }
     const handleDrawer = () => {
-      console.log(!this.state.drawerOpen);
       this.setState({drawerOpen: !this.state.drawerOpen});
     }
 
@@ -436,9 +585,9 @@ state={
                 <TextField
                   id="title"
                   defaultValue={this.state.encuestas[0]}
-                  multiline
                   fullWidth
-                  inputProps={{style: {fontSize: 30, paddingTop: 5}}}
+                  className={classes.textfield}
+                  inputProps={{style: {fontSize: 30}}}
                   onBlur={(name) => this.changeFormName(name)}
                 />
                 <TextField
@@ -453,7 +602,6 @@ state={
               {this.createEncuestas(this.encuestas)}
             </div>
             <div>
-              <Button style={buttonStyles}>Borrar Pregunta</Button>
               <Button style={buttonStyles}>Guardar</Button>
               <Button style={buttonStyles} >Guardar y Publicar</Button>
               <Button style={buttonStyles} href='/Home'>Volver</Button>
@@ -628,7 +776,7 @@ state={
             </FormGroup>
           </ModalBody>
           <ModalFooter>
-            <Button color="primary" onClick={() => {this.questionType = 'true/false'; this.abrirModal('respuestas')}}>Continuar</Button>
+            <Button color="primary" onClick={() => {this.questionType = 'true_false'; this.abrirModal('respuestas')}}>Continuar</Button>
             <Button color="secondary" onClick={() => this.cerrarModal()}>Cancelar</Button>
           </ModalFooter>
         </Modal>
@@ -678,7 +826,7 @@ state={
             </FormGroup>
           </ModalBody>
           <ModalFooter>
-            <Button color="primary" onClick={() => {this.questionType= 'range'; this.preguntaRango(document.getElementById('range').value)}}>Guardar</Button>
+            <Button color="primary" onClick={() => {this.questionType= 'range_number'; this.preguntaRango(document.getElementById('range').value)}}>Guardar</Button>
             <Button color="secondary" onClick={() => this.cerrarModal()}>Cancelar</Button>
           </ModalFooter>
         </Modal>
@@ -720,7 +868,7 @@ state={
             </FormGroup>
           </ModalBody>
           <ModalFooter>
-            <Button color="primary" onClick={() => {this.questionType= 'imagen'; this.preguntaCompleja(document.getElementById('imagenPreg').value)}}>Guardar</Button>
+            <Button color="primary" onClick={() => {this.questionType= 'img'; this.preguntaCompleja(document.getElementById('imagenPreg').value)}}>Guardar</Button>
             <Button color="secondary" onClick={() => this.cerrarModal()}>Cancelar</Button>
           </ModalFooter>
         </Modal>
