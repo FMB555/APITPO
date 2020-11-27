@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
@@ -12,14 +12,6 @@ import Button from '@material-ui/core/Button';
 /*function preventDefault(event) {
   event.preventDefault();
 }*/
-
-function deleteForm(form) {
-  cards.pop(form);
-}
-
-function duplicateForm(form) {
-  cards.push(form);
-}
 
 const useStyles = makeStyles((theme) => ({
   depositContext: {
@@ -45,11 +37,23 @@ const useStyles = makeStyles((theme) => ({
     }
   }
 }));
-const cards = [["Tu Vida con corona virus", "12/9/2020"], ["Título 2", "23/9/2020"], ["Título 3", 3],
-               ["Título 4", 4], ["Título 5", 5], ["Título 6", 6]];
 
 export default function Deposits() {
+  const [cards, setCards] = useState([["Tu Vida con corona virus", "12/9/2020"], ["Título 2", "23/9/2020"], ["Título 3", 3],
+    ["Título 4", 4], ["Título 5", 5], ["Título 6", 6]]);
   const classes = useStyles();
+  const date = new Date();
+
+  const deleteForm = (form) => {
+    setCards(cards.filter(x => x !== form))
+  }
+
+  const duplicateForm = (form) => {
+    let newForm = [form[0], form[1]]
+    newForm[1] = date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear()
+    setCards(cards.concat([newForm]))
+  }
+
   return (
     <React.Fragment>
       <Container className={classes.cardGrid} maxWidth="md">
@@ -68,10 +72,10 @@ export default function Deposits() {
                       <Button size="small" color="primary" className={classes.button}>
                         Editar
                       </Button>
-                      <Button size="small" color="primary" className={classes.button} onClick={(card) => deleteForm(card)}>
+                      <Button size="small" color="primary" className={classes.button} onClick={() => deleteForm(card)}>
                         Borrar
                       </Button>
-                      <Button size="small" color="primary" className={classes.button} onClick={(card) => duplicateForm(card)}>
+                      <Button size="small" color="primary" className={classes.button} onClick={() => duplicateForm(card)}>
                         Duplicar
                       </Button>
                     </CardActions>

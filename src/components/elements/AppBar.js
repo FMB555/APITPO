@@ -7,7 +7,6 @@ import InputBase from '@material-ui/core/InputBase';
 import Badge from '@material-ui/core/Badge';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
-//import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import MailIcon from '@material-ui/icons/Mail';
@@ -16,7 +15,7 @@ import MoreIcon from '@material-ui/icons/MoreVert';
 import DirectionsWalkIcon from '@material-ui/icons/DirectionsWalk';
 import { useHistory } from 'react-router-dom';
 import logo from "../logos/isologotipo-negativo.png";
-import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import AccountBox from '@material-ui/icons/AccountBox';
 
 const useStyles = makeStyles((theme) => ({
   appbar: {
@@ -183,13 +182,13 @@ export default function PrimarySearchAppBar(props) {
   
             <IconButton
               edge="end"
-              aria-label="account of current user"
+              aria-label="list of users"
               aria-controls={menuId}
               aria-haspopup="true"
-              href = 'SignUp'
-              color="inherit"
+              href='users'
+              style={{ color: "#FFF", marginRight: 10 }}
             >
-              <AddCircleOutlineIcon />
+              <AccountBox />
             </IconButton>
               
             <IconButton
@@ -197,8 +196,8 @@ export default function PrimarySearchAppBar(props) {
               aria-label="account of current user"
               aria-controls={menuId}
               aria-haspopup="true"
-              href = '/'
-              color="inherit"
+              href='/'
+              style={{ color: "#FFF" }}
             >
               <DirectionsWalkIcon />
             </IconButton> 
