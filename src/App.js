@@ -8,7 +8,7 @@ import signUp from './components/pages/SignUp';
 import home from "./components/pages/Home";
 import crearEncuesta from "./components/pages/Encuesta";
 import E from "./components/pages/E";
-import appbar from "./components/pages/appbar";
+//import appbar from "./components/pages/appbar";
 
 class App extends React.Component {
   render() {
@@ -20,8 +20,7 @@ class App extends React.Component {
             <Route path='/signUp' component={signUp} />
             <Route path='/home' component={home} />
             <Route path='/crearEncuesta' component={crearEncuesta} />
-            <Route path='/E' component={E} />
-            <Route path="/Appbar" component={appbar} />
+            <Route path='/users' component={E} />
           </Switch>
         </div>
       </Router>
